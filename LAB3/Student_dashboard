@@ -1,155 +1,207 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MaterialApp(
+      home: StudentDashboard(),
+    ),
+  );
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class StudentDashboard extends StatefulWidget {
+  const StudentDashboard({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: const StudentScreen(),
-    );
-  }
+  State<StudentDashboard> createState() => _StudentDashboardState();
 }
 
-class StudentScreen extends StatelessWidget {
-  const StudentScreen({super.key});
+class _StudentDashboardState extends State<StudentDashboard> {
+  bool notification = false;
+  int counter = 0;
+
+  Widget featureBox(IconData icon, String text) {
+    return Column(
+      children: [
+        Container(
+          height: 70,
+          width: 70,
+          decoration: BoxDecoration(
+            color: Colors.blue.shade100,
+            borderRadius: BorderRadius.circular(15),
+          ),
+          child: Icon(
+            icon,
+            color: Colors.blue,
+            size: 35,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          text,
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Student Information"),
+        title: const Text("Student Dashboard"),
         backgroundColor: Colors.blue,
       ),
-
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: const [
-          StudentCard(),
-          StudentCard(),
-          StudentCard(),
-        ],
-      ),
-    );
-  }
-}
-
-// Custom Widget
-class StudentCard extends StatefulWidget {
-  const StudentCard({super.key});
-
-  @override
-  State<StudentCard> createState() => _StudentCardState();
-}
-
-class _StudentCardState extends State<StudentCard> {
-  final nameController = TextEditingController();
-  final branchController = TextEditingController();
-  final cgpaController = TextEditingController();
-
-  @override
-  void dispose() {
-    nameController.dispose();
-    branchController.dispose();
-    cgpaController.dispose();
-    super.dispose();
-  }
-
-  void saveStudent() {
-    String name = nameController.text;
-    String branch = branchController.text;
-    String cgpa = cgpaController.text;
-
-    print("Name: $name");
-    print("Branch: $branch");
-    print("CGPA: $cgpa");
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text("Student details saved"),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 16),
-      elevation: 4,
-
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-
+      body: SingleChildScrollView(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
-            // Icon
-            const Center(
-              child: Icon(
-                Icons.person,
-                size: 60,
-                color: Colors.blue,
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Image.asset(
+                  "assets/images/image1.jpg",
+                  width: double.infinity,
+                  height: 220,
+                  fit: BoxFit.cover,
+                ),
+                Positioned(
+                  left: 20,
+                  bottom: -40,
+                  child: CircleAvatar(
+                    radius: 45,
+                    backgroundImage:
+                        const AssetImage("assets/images/image2.jpg"),
+                  ),
+                ),
+                const Positioned(
+                  left: 120,
+                  bottom: 25,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Nedunuri Geya",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        "Computer Science Student",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 60),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                featureBox(Icons.menu_book, "Books"),
+                featureBox(Icons.assignment, "Tasks"),
+                featureBox(Icons.school, "Marks"),
+                featureBox(Icons.person, "Profile"),
+              ],
+            ),
+            const SizedBox(height: 30),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  onPressed: notification
+                      ? () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Login Button Pressed"),
+                            ),
+                          );
+                        }
+                      : null,
+                  child: const Text("Login"),
+                ),
+                OutlinedButton(
+                  onPressed: notification
+                      ? () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Register Button Pressed"),
+                            ),
+                          );
+                        }
+                      : null,
+                  child: const Text("Register"),
+                ),
+              ],
+            ),
+            const SizedBox(height: 30),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  "Notifications",
+                  style: TextStyle(fontSize: 20),
+                ),
+                Switch(
+                  value: notification,
+                  onChanged: (value) {
+                    setState(() {
+                      notification = value;
+                    });
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              "Counter",
+              style: TextStyle(
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
               ),
             ),
-
-            const SizedBox(height: 15),
-
-            // Name
-            TextField(
-              controller: nameController,
-              decoration: const InputDecoration(
-                labelText: "Student Name",
-                hintText: "Enter name",
-                prefixIcon: Icon(Icons.person),
-                border: OutlineInputBorder(),
+            const SizedBox(height: 10),
+            Text(
+              "$counter",
+              style: const TextStyle(
+                fontSize: 45,
+                fontWeight: FontWeight.bold,
               ),
             ),
-
-            const SizedBox(height: 12),
-
-            // Branch
-            TextField(
-              controller: branchController,
-              decoration: const InputDecoration(
-                labelText: "Branch",
-                hintText: "Enter branch",
-                prefixIcon: Icon(Icons.school),
-                border: OutlineInputBorder(),
-              ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  onPressed: notification
+                      ? () {
+                          setState(() {
+                            counter++;
+                          });
+                        }
+                      : null,
+                  child: const Text("+"),
+                ),
+                ElevatedButton(
+                  onPressed: notification
+                      ? () {
+                          setState(() {
+                            counter--;
+                          });
+                        }
+                      : null,
+                  child: const Text("-"),
+                ),
+              ],
             ),
-
-            const SizedBox(height: 12),
-
-            // CGPA
-            TextField(
-              controller: cgpaController,
-              keyboardType: const TextInputType.numberWithOptions(
-                decimal: true,
-              ),
-              decoration: const InputDecoration(
-                labelText: "CGPA",
-                hintText: "Enter CGPA",
-                prefixIcon: Icon(Icons.star),
-                border: OutlineInputBorder(),
-              ),
-            ),
-
-            const SizedBox(height: 15),
-
-            // Save button
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: saveStudent,
-                child: const Text("Save Student"),
-              ),
-            ),
+            const SizedBox(height: 30),
           ],
         ),
       ),
